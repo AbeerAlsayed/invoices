@@ -97,6 +97,35 @@ class InvoiceController extends Controller
         return back();
     }
 
+    public function edit($id)
+    {
+        $invoices = Invoice::where('id', $id)->first();
+        $sections = Section::all();
+        return view('invoices.edit_invoices', compact('sections', 'invoices'));
+    }
+
+    public function update(Request $request)
+    {
+        $invoices = Invoice::findOrFail($request->invoice_id);
+        $invoices->update([
+            'invoice_number' => $request->invoice_number,
+            'invoice_Date' => $request->invoice_Date,
+            'Due_date' => $request->Due_date,
+            'product' => $request->product,
+            'section_id' => $request->Section,
+            'Amount_collection' => $request->Amount_collection,
+            'Amount_Commission' => $request->Amount_Commission,
+            'Discount' => $request->Discount,
+            'Value_VAT' => $request->Value_VAT,
+            'Rate_VAT' => $request->Rate_VAT,
+            'Total' => $request->Total,
+            'note' => $request->note,
+        ]);
+
+        session()->flash('edit', 'تم تعديل الفاتورة بنجاح');
+        return back();
+    }
+
     public function get_product($id){
         $product=Product::where('section_id',$id)->pluck('Product_name','id');
         return json_encode($product);
